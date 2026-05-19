@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SHABANG - Drake ft. Quavo</title>
+<title>SHABANG — Drake ft. Quavo</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -118,6 +118,11 @@ body { background: #050505; display: flex; justify-content: center; align-items:
 .time-row { display: flex; justify-content: space-between; font-size: 9px; color: #444; }
 
 .loading-msg { font-size: 10px; color: #444; letter-spacing: 1px; }
+.sync-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.sync-label { font-size: 9px; color: #444; letter-spacing: 1px; }
+.sync-val { font-size: 10px; color: #28c840; min-width: 28px; text-align: center; }
+.sync-btn { background: #1a1a1a; border: 1px solid #2a2a2a; color: #aaa; border-radius: 4px; width: 22px; height: 22px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; }
+.sync-btn:hover { border-color: #28c840; color: #28c840; }
 
 #lyrics-scroll { overflow-y: auto; max-height: 65vh; scroll-behavior: smooth; }
 </style>
@@ -223,6 +228,12 @@ body { background: #050505; display: flex; justify-content: center; align-items:
       </div>
     </div>
     <span class="loading-msg" id="loading-msg">loading...</span>
+    <div class="sync-wrap">
+      <span class="sync-label">sync</span>
+      <button class="sync-btn" onclick="adjustOffset(-0.5)">−</button>
+      <span class="sync-val" id="sync-val">0s</span>
+      <button class="sync-btn" onclick="adjustOffset(0.5)">+</button>
+    </div>
     <a href="https://github.com/TDoe-Tech" target="_blank" style="font-size:10px;color:#333;text-decoration:none;letter-spacing:1px;flex-shrink:0;" onmouseover="this.style.color='#28c840'" onmouseout="this.style.color='#333'">© TDoe-Tech</a>
   </div>
 </div>
@@ -230,7 +241,12 @@ body { background: #050505; display: flex; justify-content: center; align-items:
 <!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let player, raf, playing = false;
+let player, raf, playing = false, syncOffset = 0;
+
+function adjustOffset(delta) {
+  syncOffset = Math.round((syncOffset + delta) * 10) / 10;
+  document.getElementById('sync-val').textContent = (syncOffset >= 0 ? '+' : '') + syncOffset + 's';
+}
 
 const allLines = document.querySelectorAll('.line[data-t]');
 const lineTimings = Array.from(allLines).map(el => ({ el, t: parseInt(el.dataset.t) }));
@@ -255,7 +271,7 @@ function updateActive(t) {
 
 function tick() {
   if (!player || !playing) return;
-  const t = player.getCurrentTime();
+  const t = player.getCurrentTime() + syncOffset;
   const dur = player.getDuration() || 1;
   document.getElementById('progress').style.width = ((t / dur) * 100) + '%';
   document.getElementById('cur-time').textContent = fmt(t);

@@ -1,4 +1,4 @@
-# drake-shabang-it-edition 🖥️
+# Drake Shabang IT Edition 🖥️
 
 A fun little side project I built a music video visualizer for Drake's Shabang where every tech reference in the lyrics is swapped out for its real equivalent. Shebang becomes `#!/bin/bash`, "some head" becomes `<head>`, "they dess" becomes `SIGKILL`, you get the idea.
 
